@@ -126,12 +126,28 @@ int main(int argc, char **argv) {
         uint y = 600 - static_cast<uint>(p.second);
         circle(src, cv::Point(x, y), 5, cv::Scalar(255, 255, 255), CV_FILLED, 8, 0);
     }
-    auto  res = ConvexHull_Jarvis_seq(points);
+    auto  res = ConvexHull_Jarvis_omp(points);
     for (auto p : res) {
         uint x = static_cast<uint>(p.first);
         uint y = 600 - static_cast<uint>(p.second);
         circle(src, cv::Point(x, y), 5, cv::Scalar(0, 255, 0), CV_FILLED, 8, 0);
     }
+
+    for (size_t i = 0; i < res.size() - 1; i++)
+    {
+        uint x1 = static_cast<uint>(res[i].first);
+        uint y1 = 600 - static_cast<uint>(res[i].second);
+        uint x2 = static_cast<uint>(res[i+1].first);
+        uint y2 = 600 - static_cast<uint>(res[i+1].second);
+        cv::line(src, cv::Point(x1, y1), cv::Point(x2, y2), cv::Scalar(0, 0, 255), 4);
+    }
+
+    uint x1 = static_cast<uint>(res[0].first);
+    uint y1 = 600 - static_cast<uint>(res[0].second);
+    uint x2 = static_cast<uint>(res[res.size()-1].first);
+    uint y2 = 600 - static_cast<uint>(res[res.size() - 1].second);
+    cv::line(src, cv::Point(x1, y1), cv::Point(x2, y2), cv::Scalar(0, 0, 255), 4);
+
     cv::imshow("Image", src);
     cv::waitKey(0);
     return 0;

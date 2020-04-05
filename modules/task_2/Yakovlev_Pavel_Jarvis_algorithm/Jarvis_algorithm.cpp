@@ -153,7 +153,7 @@ std::vector<std::pair<double, double>> ConvexHull_Jarvis_omp(std::vector<std::pa
     
     int ind = 0;
     for (int i = 1; i < NUM_THREADS; i++) {
-        if (vecMaxCos[ind] < vecMaxCos[i]) {
+        if (vecMaxCos[ind] <= vecMaxCos[i]) {
             ind = i;
         }
     }
@@ -198,7 +198,6 @@ std::vector<std::pair<double, double>> ConvexHull_Jarvis_omp(std::vector<std::pa
                     ((points[i].first - currX) * (points[i].first - currX) +
                         (points[i].second - currY) * (points[i].second - currY)));
 
-
                 if (cos >= -1.0 && cos <= 1.0 && cos <= vecMinCos[thread]) {
                     vecNext[thread] = i;
                     vecMinCos[thread] = cos;
@@ -207,7 +206,7 @@ std::vector<std::pair<double, double>> ConvexHull_Jarvis_omp(std::vector<std::pa
         }
         int ind = 0;
         for (int i = 1; i < NUM_THREADS; i++) {
-            if (vecMinCos[ind] > vecMinCos[i]) {
+            if (vecMinCos[ind] >= vecMinCos[i]) {
                 //minCos = vecMinCos[i];
                 ind = i;
             }
