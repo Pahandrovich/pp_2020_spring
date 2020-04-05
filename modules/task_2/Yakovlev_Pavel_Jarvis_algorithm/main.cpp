@@ -71,6 +71,7 @@ TEST(OMP_algorithm, Test_some_eq_points) {
         std::make_pair(2.0, 4.0),
         std::make_pair(2.0, 4.0),
         std::make_pair(1.0, 1.0),
+        std::make_pair(1.0, 1.0),
         std::make_pair(5.0, 4.0),
         std::make_pair(5.0, 4.0),
         std::make_pair(3.0, 3.0)
