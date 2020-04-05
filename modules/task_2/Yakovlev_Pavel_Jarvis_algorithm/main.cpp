@@ -71,7 +71,6 @@ TEST(OMP_algorithm, Test_some_eq_points) {
         std::make_pair(2.0, 4.0),
         std::make_pair(2.0, 4.0),
         std::make_pair(1.0, 1.0),
-        std::make_pair(1.0, 1.0),
         std::make_pair(5.0, 4.0),
         std::make_pair(5.0, 4.0),
         std::make_pair(3.0, 3.0)
@@ -87,7 +86,7 @@ TEST(OMP_algorithm, Test_some_eq_points) {
 }
 
 TEST(OMP_algorithm, Test_time_algo) {
-    auto points = getRandomVectorOfPair(10000);
+    auto points = getRandomVectorOfPair(1000000);
 
     //std::cout << "all points:" << std::endl;
     //for (auto p : points)
@@ -96,12 +95,13 @@ TEST(OMP_algorithm, Test_time_algo) {
 
     double start1 = omp_get_wtime();
     auto  seq = ConvexHull_Jarvis_seq(points);
-    printf("Time seq: %f \n", omp_get_wtime() - start1);
+    double end1 = omp_get_wtime();
+    std::cout<< "Time seq: " << end1 - start1 << std::endl;
     double start2 = omp_get_wtime();
     auto  omp = ConvexHull_Jarvis_omp(points);
-    printf("Time omp: %f \n", omp_get_wtime() - start2);
-    
-    double start = omp_get_wtime();
+    double end2 = omp_get_wtime();
+    std::cout << "Time omp: " << end2 - start2 << std::endl;
+    std::cout << "scalability: " << (end1 - start1)/(end2 - start2) << std::endl;
 
     ASSERT_EQ(omp, seq);
 }

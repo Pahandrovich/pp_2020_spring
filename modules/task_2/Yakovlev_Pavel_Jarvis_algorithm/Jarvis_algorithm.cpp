@@ -8,7 +8,7 @@
 #include <iostream>
 #include "../../../modules/task_1/Yakovlev_Pavel_Jarvis_algorithm/Jarvis_algorithm.h"
 
-#define NUM_THREADS 8
+#define NUM_THREADS 4
 
 std::vector<std::pair<double, double>> getRandomVectorOfPair(size_t sz) {
     std::mt19937 gen(static_cast<unsigned int>(time(0)));
