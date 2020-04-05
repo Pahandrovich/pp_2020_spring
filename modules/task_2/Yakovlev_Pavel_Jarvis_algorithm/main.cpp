@@ -1,8 +1,8 @@
 // Copyright 2020 Yakovlev Pavel
+#include <omp.h>
 #include <vector>
 #include <iostream>
 #include <utility>
-#include <omp.h>
 #include "./Jarvis_algorithm.h"
 #ifndef OPENCV
 #include <gtest/gtest.h>
@@ -88,11 +88,6 @@ TEST(OMP_algorithm, Test_some_eq_points) {
 
 TEST(OMP_algorithm, Test_time_algo) {
     auto points = getRandomVectorOfPair(1000000);
-
-    //std::cout << "all points:" << std::endl;
-    //for (auto p : points)
-    //    std::cout << p.first << " " << p.second << std::endl;
-    //std::cout << "end print all points:" << std::endl;
 
     double start1 = omp_get_wtime();
     auto  seq = ConvexHull_Jarvis_seq(points);

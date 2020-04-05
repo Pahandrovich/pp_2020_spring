@@ -25,8 +25,7 @@ std::vector<std::pair<double, double>> ConvexHull_Jarvis_seq(std::vector<std::pa
     for (size_t i = 1; i < sz; i++) {
         if (points[i].second < points[firstP].second) {
             firstP = i;
-        }
-        else if (points[i].second == points[firstP].second) {
+        } else if (points[i].second == points[firstP].second) {
             if (points[i].first <= points[firstP].first) {
                 firstP = i;
             }
@@ -54,9 +53,7 @@ std::vector<std::pair<double, double>> ConvexHull_Jarvis_seq(std::vector<std::pa
     size_t prev = firstP;
     size_t curr = secondP;
     size_t next = firstP;
-    size_t iter = 0;
     while (curr != firstP) {
-        //std::cout << iter++ << std::endl;
         double prevX = points[prev].first;
         double prevY = points[prev].second;
         double currX = points[curr].first;
@@ -90,21 +87,18 @@ std::vector<std::pair<double, double>> ConvexHull_Jarvis_seq(std::vector<std::pa
 std::vector<std::pair<double, double>> ConvexHull_Jarvis_omp(std::vector<std::pair<double, double>> points) {
     int sz = static_cast<int>(points.size());
     std::vector<std::pair<double, double>> convH;
-    //int firstP = 0;
     omp_set_num_threads(NUM_THREADS);
     int* vecFirst = new int[NUM_THREADS];
     for (int i = 0; i < NUM_THREADS; i++) { vecFirst[i] = 0; }
-//*****************************************  FIND FIRST POINT  ******************************************
+// *****************************************  FIND FIRST POINT  ******************************************
 #pragma omp parallel num_threads(NUM_THREADS)
     {
         int thread = omp_get_thread_num();
-        //std::cout << thread << std::endl;
-#pragma omp parallel for 
+#pragma omp parallel for
         for (int i = 1; i < sz; i++) {
             if (points[i].second < points[vecFirst[thread]].second) {
                 vecFirst[thread] = i;
-            }
-            else if (points[i].second == points[vecFirst[thread]].second) {
+            } else if (points[i].second == points[vecFirst[thread]].second) {
                 if (points[i].first <= points[vecFirst[thread]].first) {
                     vecFirst[thread] = i;
                 }
@@ -116,8 +110,7 @@ std::vector<std::pair<double, double>> ConvexHull_Jarvis_omp(std::vector<std::pa
     for (int i = 1; i < NUM_THREADS; i++) {
         if (points[vecFirst[i]].second < points[firstP].second) {
             firstP = i;
-        }
-        else if (points[vecFirst[i]].second == points[firstP].second) {
+        } else if (points[vecFirst[i]].second == points[firstP].second) {
             if (points[vecFirst[i]].first <= points[firstP].first) {
                 firstP = vecFirst[i];
             }
@@ -125,7 +118,7 @@ std::vector<std::pair<double, double>> ConvexHull_Jarvis_omp(std::vector<std::pa
     }
     convH.push_back(std::make_pair(points[firstP].first, points[firstP].second));
 
-//*****************************************  FIND SECOND POINT  ******************************************
+// *****************************************  FIND SECOND POINT  ******************************************
     double* vecMaxCos = new double[NUM_THREADS];
     int* vecSecondP = new int[NUM_THREADS];
     for (int i = 0; i < NUM_THREADS; i++) {
@@ -147,7 +140,6 @@ std::vector<std::pair<double, double>> ConvexHull_Jarvis_omp(std::vector<std::pa
                 vecSecondP[thread] = i;
                 vecMaxCos[thread] = cos;
             }
-
         }
     }
     
@@ -161,31 +153,23 @@ std::vector<std::pair<double, double>> ConvexHull_Jarvis_omp(std::vector<std::pa
     if (secondP != firstP)
         convH.push_back(std::make_pair(points[secondP].first, points[secondP].second));
 
-    //for (auto p : convH)
-    //    std::cout << p.first << " " << p.second << std::endl;
-    size_t iter = 0;
-//*****************************************  MAIN SCAN  ******************************************
+// *****************************************  MAIN SCAN  ******************************************
     int prev = firstP;
     int curr = secondP;
     int next = firstP;
     double* vecMinCos = new double[NUM_THREADS];
     int* vecNext = new int[NUM_THREADS];
     while (curr != firstP) {
-        //std::cout << iter++ << std::endl;
         double prevX = points[prev].first;
         double prevY = points[prev].second;
         double currX = points[curr].first;
         double currY = points[curr].second;
         double minCos = 2.0;
 
-
         for (int i = 0; i < NUM_THREADS; i++) {
             vecMinCos[i] = minCos;
             vecNext[i] = next;
         }
-
-
-
 #pragma omp parallel num_threads(NUM_THREADS)
         {
             int thread = omp_get_thread_num();
@@ -207,16 +191,11 @@ std::vector<std::pair<double, double>> ConvexHull_Jarvis_omp(std::vector<std::pa
         int ind = 0;
         for (int i = 1; i < NUM_THREADS; i++) {
             if (vecMinCos[ind] >= vecMinCos[i]) {
-                //minCos = vecMinCos[i];
                 ind = i;
             }
         }
         next = vecNext[ind];
         minCos = vecMinCos[ind];
-
-        //std::cout << "next = " << next << std::endl;
-        //std::cout << "minCos = " << minCos << std::endl;
-        //for (int i = 0; i < NUM_THREADS; ++i) std::cout << vecMinCos[i] <<"\t";
 
         if (minCos == 2.0) {
             convH.pop_back();
@@ -227,6 +206,6 @@ std::vector<std::pair<double, double>> ConvexHull_Jarvis_omp(std::vector<std::pa
         if (next != firstP)
             convH.push_back(std::make_pair(points[next].first, points[next].second));
     }
-    
+
     return convH;
 }
